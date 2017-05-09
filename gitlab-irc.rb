@@ -56,44 +56,42 @@ def getFormat(kind, json)
     "merge_request"
   ]
   Thread.new do
-  j = RecursiveOpenStruct.new(json)
+    j = RecursiveOpenStruct.new(json)
+    case kind
+    when 'push' # comes to
+      # shove
+      branch = j.ref
+      commits = j.commits
+      owner = j.project.namespace
+      project = j.project.name
+      pusher = j.user_name
+      commit_count = j.total_commits_count
+      repo_url = j.project.web_url
+      before_list = []
+      before_list << "[#{owner}/#{project}] #{pusher} pushed #{commit_count} commit(s) to #{branch} <#{repo_url}>"
+      push_list = []
+      if commits.length > 3
+        coms = commits[0..2]
+        coms.each do |n|
+          id = n.id
+          msg = n.message
 
-  case kind
-  when 'push' # comes to
-    # shove
-    branch = j.ref
-    commits = j.commits
-    owner = j.project.namespace
-    project = j.project.name
-    pusher = j.user_name
-    commit_count = j.total_commits_count
-    repo_url = j.project.web_url
-    before_list = [
-      "[#{owner}/#{project}] #{pusher} pushed #{commit_count} commit(s) to #{branch} <#{repo_url}>",
+          push_list << ""
+        end
+      else
+        commits.each do |n|
+          id = n.id
+          msg = n.message
 
-    ]
-    push_list = []
-    if commits.length > 3
-      coms = commits[0..2]
-      coms.each do |n|
-        id = n.id
-        msg = n.message
-
-        push_list << ""
+          push_list << ""
       end
-    else
-      commits.each do |n|
-        id = n.id
-        msg = n.message
-
-        push_list << ""
+      return [before_list, push_list]
     end
-    return [before_list, push_list]
   end
   Thread.stop
 end
 # @note POST ME DADDY
-post '/gitlab' do
+post '/gitlab/?' do
   if headers['X-Gitlab-Token'] == config.token
     Thread.new do
       json = JSON.parse(request.env["rack.input"].read)
