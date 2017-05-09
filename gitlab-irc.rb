@@ -9,25 +9,35 @@ require 'yaml'
 
 # @note Load the plugins
 require './lib/chancontrol.rb'
+require './lib/logger.rb'
 
-$cfg = RecursiveOpenStruct.new(YAML.load(File.open(`echo ~/.gitlab-rc.yml`.chomp!, "r")))
+$cfg = RecursiveOpenStruct.new(YAML.load_file(`echo ~/.gitlab-rc.yml`.chomp!))
+$bots = Hash.new
+$threads = Array.new
 
-# @note BuddyIM config
 $cfg.networks.each do |name|
+  ncfg = $cfg.dig(:networks, name)
   puts name
-  buddy = Cinch::Bot.new do
+  bot = Cinch::Bot.new do
     configure do |c|
-      c.server = "irc.buddy.im"
-      c.port = 6697
-      c.nick = "GitLab"
-      #c.sasl.username = "GitLab0"
-      #c.sasl.password = "piepie"
-      c.ssl.use = true
-      c.ssl.verify = false
-      c.messages_per_second = 0.1
-      c.plugins.plugins = [ChanControl]
+      c.server = ncfg.server
+      c.port = ncfg.port
+      c.nick = ncfg.nickname
+      c.username = ncfg.username
+      c.realname = ncfg.realname
+      #c.sasl.username = ncfg.sasl_username
+      #c.sasl.password = ncfg.sasl_password
+      c.ssl.use = ncfg.ssl
+      c.ssl.verify = ncfg.sslverify
+      c.messages_per_second = ncfg.mps
+      c.plugins.plugins = ncfg.plugins
     end
   end
+  bot.loggers.clear
+  bot.loggers << RequestLogger.new(name, File.open("log/irc-#{name}.log", "a"))
+  bot.loggers << RequestLogger.new(name, STDOUT)
+  bot.loggers.level = :error
+  $bots[name] = bot
 end
 
 # *getFormat*
