@@ -92,6 +92,7 @@ class MyApp < Sinatra::Base
   set :bind, "0.0.0.0"
   set :threaded, true
   set :environment, 'production'
+  set :traps, false
   post '/gitlab/?' do
     channel = nil
     network = nil
@@ -116,6 +117,7 @@ class MyApp < Sinatra::Base
         end
       end
     end
+    erb "Received! Thanks."
   end
 end
 # start the server if ruby file executed directly
