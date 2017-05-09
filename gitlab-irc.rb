@@ -100,13 +100,26 @@ class MyApp < Sinatra::Base
   set :threaded, true
   set :environment, 'production'
   post '/gitlab/?' do
-    if headers['X-Gitlab-Token'] == config.token
+    channel = nil
+    network = nil
+    if $cfg.has_value? headers['X-Gitlab-Token']
+      sent_token = headers['X-Gitlab-Token']
+      networks = $cfg.dig :networks
+      networks.each do |name, nethash|
+        channels = nethash.fetch('channels', nil)
+        channels.each do |c, chash|
+          if chash.token == sent_token
+            channel = c
+            network = name
+          end
+        end
+      end
       json = JSON.parse(request.env["rack.input"].read)
       kind = json['object_kind']
       format = getFormat(kind, json)
       bot.channels.each do |m|
         format.each do |n|
-          bot.Channel(m).send("#{n}")
+          $bots[name].Channel(channel).send("#{n}")
         end
       end
     end
