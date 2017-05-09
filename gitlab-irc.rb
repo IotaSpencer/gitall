@@ -9,7 +9,8 @@ require 'recursive-open-struct'
 require 'yaml'
 
 # @note Load the plugins
-require 'lib/chancontrol'
+require './lib/chancontrol.rb'
+
 $config = RecursiveOpenStruct.new
 
 # IRC Config
