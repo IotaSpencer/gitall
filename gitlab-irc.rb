@@ -14,20 +14,19 @@ $cfg = YAML.load_file("/home/bots/.gitlab-rc.yml")
 $bots = Hash.new
 $threads = Array.new
 
-$cfg["networks"].each do |name|
-  ncfg = RecursiveOpenStruct.new($cfg["networks"][name])
+$cfg["networks"].each do |name, ncfg|
   bot = Cinch::Bot.new do
     configure do |c|
-      c.server = ncfg.server
-      c.port = ncfg.port
-      c.nick = ncfg.nickname
-      c.username = ncfg.username
-      c.realname = ncfg.realname
+      c.server = ncfg.fetch('server')
+      c.port = ncfg.fetch('port')
+      c.nick = ncfg.fetch('nickname')
+      c.username = ncfg.fetch('username')
+      c.realname = ncfg.fetch('realname')
       #c.sasl.username = ncfg.sasl_username
       #c.sasl.password = ncfg.sasl_password
-      c.ssl.use = ncfg.ssl
-      c.ssl.verify = ncfg.sslverify
-      c.messages_per_second = ncfg.mps
+      c.ssl.use = ncfg.fetch('ssl')
+      c.ssl.verify = ncfg.fetch('sslverify')
+      c.messages_per_second = ncfg.fetch('mps')
       #c.plugins.plugins = ncfg.plugins
     end
   end
