@@ -1,6 +1,6 @@
 #! /usr/bin/env ruby
 require 'rubygems'
-require 'sinatra'
+require 'sinatra/base'
 require 'json'
 require 'cinch'
 require 'ostruct'
@@ -33,10 +33,10 @@ $cfg.networks.each do |name|
       c.plugins.plugins = ncfg.plugins
     end
   end
-  bot.loggers.clear
-  bot.loggers << RequestLogger.new(name, File.open("log/irc-#{name}.log", "a"))
-  bot.loggers << RequestLogger.new(name, STDOUT)
-  bot.loggers.level = :error
+  # bot.loggers.clear
+  # bot.loggers << RequestLogger.new(name, File.open("log/request-#{name}.log", "a"))
+  # bot.loggers << RequestLogger.new(name, STDOUT)
+  # bot.loggers.level = :error
   $bots[name] = bot
 end
 
@@ -88,18 +88,27 @@ def getFormat(kind, json)
   Thread.stop
 end
 # @note POST ME DADDY
-post '/gitlab/?' do
-  if headers['X-Gitlab-Token'] == config.token
-    Thread.new do
-      json = JSON.parse(request.env["rack.input"].read)
-      kind = json['object_kind']
-      format = getFormat(kind, json)
-      bot.channels.each do |m|
-        format.each do |n|
-          bot.Channel(m).send("#{n}")
+class MyApp < Sinatra::Base
+  # ... app code here ...
+  set :port, 8008
+  set :bind, "0.0.0.0"
+  set :threaded, true
+  set :environment, 'production'
+  post '/gitlab/?' do
+    if headers['X-Gitlab-Token'] == config.token
+      Thread.new do
+        json = JSON.parse(request.env["rack.input"].read)
+        kind = json['object_kind']
+        format = getFormat(kind, json)
+        bot.channels.each do |m|
+          format.each do |n|
+            bot.Channel(m).send("#{n}")
+          end
         end
       end
+      Thread.stop
     end
-    Thread.stop
   end
+  # start the server if ruby file executed directly
+  run! if app_file == $0
 end
