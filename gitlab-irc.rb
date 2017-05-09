@@ -14,8 +14,8 @@ $cfg = YAML.load_file("/home/bots/.gitlab-rc.yml")
 $bots = Hash.new
 $threads = Array.new
 
-$cfg[:networks].each do |name|
-  ncfg = RecursiveOpenStruct.new($cfg[:networks][name])
+$cfg["networks"].each do |name|
+  ncfg = RecursiveOpenStruct.new($cfg["networks"][name])
   bot = Cinch::Bot.new do
     configure do |c|
       c.server = ncfg.server
