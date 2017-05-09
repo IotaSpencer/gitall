@@ -81,8 +81,8 @@ def getFormat(kind, json)
         commits.each do |n|
           id = n.id
           msg = n.message
-          
           push_list << ""
+        end
       end
       return [before_list, push_list]
     end
