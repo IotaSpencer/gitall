@@ -14,11 +14,10 @@ require './lib/chancontrol.rb'
 $config = RecursiveOpenStruct.new
 
 # IRC Config
-bot = Cinch::Bot.new do
+buddy = Cinch::Bot.new do
   configure do |c|
     c.server = "irc.buddy.im"
     c.port = 6697
-    c.channels = ["#IRC-Source/Private", "#IRC-Source/Dev/Priv"]
     c.nick = "GitLab"
     #c.sasl.username = "GitLab0"
     #c.sasl.password = "piepie"
@@ -28,8 +27,21 @@ bot = Cinch::Bot.new do
     c.plugins.plugins = [ChanControl]
   end
 end
-bot.start
-
+ecode = Cinch::Bot.new do
+  configure do |c|
+    c.server = "irc.electrocode.net"
+    c.port = 6697
+    c.nick = "GitLab"
+    #c.sasl.username = "GitLab0"
+    #c.sasl.password = "piepie"
+    c.ssl.use = true
+    c.ssl.verify = false
+    c.messages_per_second = 0.1
+    c.plugins.plugins = [ChanControl]
+  end
+end
+buddy.start
+ecode.start
 # *getFormat*
 #
 # Returns the message format for the received
@@ -37,32 +49,58 @@ bot.start
 # @param kind [String] event type
 # @param json [JSON] json hash
 def getFormat(kind, json)
+  kinds = [
+    "push",
+    "note",
+    "wiki_page",
+    "merge_request"
+  ]
+  Thread.new do
+  j = RecursiveOpenStruct.new(json)
 
-    kinds = [
-        "push",
-        "note",
-        "wiki_page",
-        "merge_request"
+  case kind
+  when 'push' # comes to
+    # shove
+    branch = j.ref
+    commits = j.commits
+    owner = j.project.namespace
+    project = j.project.name
+    pusher = j.user_name
+    commit_count = j.total_commits_count
+    repo_url = j.project.web_url
+    before_list = [
+      "[#{owner}/#{project}] #{pusher} pushed #{commit_count} commit(s) to #{branch} <#{repo_url}>",
+
     ]
-    j = RecursiveOpenStruct.new(json)
-    j.branch = j.ref
-    case kind
-    when 'push'
-        # shove
+    push_list = []
+    if commits.length > 3
+      coms = commits[0..2]
+      coms.each do |n|
+        id = n.id
+        msg = n.message
+        
+        push_list << ""
+      end
+    else
 
     end
+    push_list
+    return [before_list, push_list]
+  end
+  Thread.stop
 end
-# @
+# @note POST ME DADDY
 post '/gitlab' do
-    if headers['X-Gitlab-Token'] == config.token
-        Thread.new do
-            json = JSON.parse(request.env["rack.input"].read)
-            kind = json['object_kind']
-            format = getFormat(kind, json)
-            bot.channels.each do |m|
-                bot.Channel(m).send("#{format()}")
-            end
-        end
-        Thread.stop
+  if headers['X-Gitlab-Token'] == config.token
+    Thread.new do
+      json = JSON.parse(request.env["rack.input"].read)
+      kind = json['object_kind']
+      format = getFormat(kind, json)
+      bot.channels.each do |m|
+        format.each do |n|
+          bot.Channel(m).send("#{n}")
+      end
     end
+    Thread.stop
+  end
 end

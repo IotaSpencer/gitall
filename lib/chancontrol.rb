@@ -7,7 +7,7 @@ require "recursive-open-struct"
 class ChanControl
   include Cinch::Plugin
   include Cinch::Extensions::Authentication
-
+  :set prefix, /^`/
   # Write to the config
   # @param [Hash] the data to write
 
@@ -32,9 +32,14 @@ class ChanControl
   match /rem (\S)/, :method => :rem
   match /list/, :method => :listchans
 
-  def add(m, channel)
+  def add(m, network, channel)
     return unless authenticated? m
+    networks = ['electrocode', 'buddyim']
     config = deFile
+    unless networks.include? network
+      m.reply "Error: That's not a valid network to me."
+      return
+    end
     if config.has_key? "#{channel}"
       if Channel(channel)
         m.reply "#{channel} already exists in the config."
