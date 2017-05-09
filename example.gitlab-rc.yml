@@ -1,14 +1,33 @@
-channels:
-  networks:
+networks:
     netname1:
-      "#channel1":
-        token: 56H15G1DF5G1DFG5D161GD # NOT REAL
-        #password: CHANNELKEYHERE
-      "#channel2":
-        token: DFG4DF56G4G56D4FG65FG4 # NOT REAL
+        server: irc.server.net
+        port: 6697
+        ssl: true
+        nick: GitLabIRC
+        username: Git
+        realname: https://gitlab.com/IotaSpencer/gitlab-irc
+        # Feel free to implement more if you know how
+
+        # Channels
+        channels:
+            "#channel1":
+                token: 56H15G1DF5G1DFG5D161GD # NOT REAL
+                #password: CHANNELKEYHERE
+            "#channel2":
+                token: DFG4DF56G4G56D4FG65FG4 # NOT REAL
     netname2:
-      "#channel1":
-        token: 56H15G1DF5G1DFG5D161GD # NOT REAL
-        #password: CHANNELKEYHERE
-      "#channel2":
-        token: DFG4DF56G4G56D4FG65FG4 # NOT REAL
+        server: irc.server.net
+        port: 6697
+        ssl: true
+        nick: GitLabIRC
+        username: Git
+        realname: https://gitlab.com/IotaSpencer/gitlab-irc
+        # Feel free to implement more if you know how
+        
+        # Channels
+        channels:
+            "#channel1":
+                token: 56H15G1DF5G1DFG5D161GD # NOT REAL
+                #password: CHANNELKEYHERE
+            "#channel2":
+                token: DFG4DF56G4G56D4FG65FG4 # NOT REAL
