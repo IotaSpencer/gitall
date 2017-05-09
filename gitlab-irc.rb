@@ -6,8 +6,12 @@ require 'json'
 require 'cinch'
 require 'ostruct'
 require 'recursive-open-struct'
+require 'sequel'
+require 'yaml'
 config = RecursiveOpenStruct.new
-config.token = '8cuRsS5X46MCS6DYz3f625Esue9Rqe'
+config.config = RecursiveOpenStruct.new
+config.config.yml = YAML.load(File.open(`echo ~/.gitlab-rc.yml`.chomp!, "r"))
+
 
 # IRC Config
 bot = Cinch::Bot.new do
@@ -46,6 +50,7 @@ def getFormat(kind, json)
 
     end
 end
+# @
 post '/gitlab' do
     if headers['X-Gitlab-Token'] == config.token
         Thread.new do
