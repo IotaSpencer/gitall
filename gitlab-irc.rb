@@ -8,7 +8,7 @@ require 'yaml'
 
 # @note Load the plugins
 require './lib/chancontrol.rb'
-require './lib/logger.rb'
+#require './lib/logger.rb'
 
 $cfg = RecursiveOpenStruct.new(YAML.load_file(`echo ~/.gitlab-rc.yml`.chomp))
 $bots = Hash.new
@@ -34,8 +34,8 @@ $cfg.networks.each do |name|
   end
   #bot.loggers.clear
   #bot.loggers << RequestLogger.new(name, File.open("log/request-#{name}.log", "a"))
-  bot.loggers << RequestLogger.new(name, STDOUT)
-  bot.loggers.level = :error
+  #bot.loggers << RequestLogger.new(name, STDOUT)
+  #bot.loggers.level = :error
   $bots[name] = bot
 end
 $bots.each do |key, bot|
@@ -80,7 +80,7 @@ def getFormat(kind, json)
       commits.each do |n|
         id = n.id
         msg = n.message
-        push_list << ""
+        push_list << "#{}"
       end
     end
     return [before_list, push_list]
@@ -121,4 +121,4 @@ end
 # end
 # # start the server if ruby file executed directly
 # Thread.new { MyApp.run! if __FILE__ == $0 }
-#$threads.each { |t| t.join }
+$threads.each { |t| t.join }
