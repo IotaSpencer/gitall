@@ -73,4 +73,6 @@ class ChanControl
         end
       end
       n.reply "Channel: #{channel} / Joined? #{joined(channel)}"
+    end
+  end
 end
