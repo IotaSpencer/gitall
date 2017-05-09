@@ -10,38 +10,26 @@ require 'yaml'
 # @note Load the plugins
 require './lib/chancontrol.rb'
 
-$config = RecursiveOpenStruct.new
+$cfg = RecursiveOpenStruct.new(YAML.load(File.open(`echo ~/.gitlab-rc.yml`.chomp!, "r")))
 
 # @note BuddyIM config
-buddy = Cinch::Bot.new do
-  configure do |c|
-    c.server = "irc.buddy.im"
-    c.port = 6697
-    c.nick = "GitLab"
-    #c.sasl.username = "GitLab0"
-    #c.sasl.password = "piepie"
-    c.ssl.use = true
-    c.ssl.verify = false
-    c.messages_per_second = 0.1
-    c.plugins.plugins = [ChanControl]
+$cfg.networks.each do |name|
+  puts name
+  buddy = Cinch::Bot.new do
+    configure do |c|
+      c.server = "irc.buddy.im"
+      c.port = 6697
+      c.nick = "GitLab"
+      #c.sasl.username = "GitLab0"
+      #c.sasl.password = "piepie"
+      c.ssl.use = true
+      c.ssl.verify = false
+      c.messages_per_second = 0.1
+      c.plugins.plugins = [ChanControl]
+    end
   end
 end
-# @note ElectroCode config
-ecode = Cinch::Bot.new do
-  configure do |c|
-    c.server = "irc.electrocode.net"
-    c.port = 6697
-    c.nick = "GitLab"
-    #c.sasl.username = "GitLab0"
-    #c.sasl.password = "piepie"
-    c.ssl.use = true
-    c.ssl.verify = false
-    c.messages_per_second = 0.1
-    c.plugins.plugins = [ChanControl]
-  end
-end
-buddy.start
-ecode.start
+
 # *getFormat*
 #
 # Returns the message format for the received
