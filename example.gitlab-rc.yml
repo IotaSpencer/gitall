@@ -4,10 +4,12 @@ networks:
         port: 6697
         ssl: true
         sslverify: false
-        nick: GitLabIRC
+        nickname: GitLabIRC
         username: Git
         realname: https://gitlab.com/IotaSpencer/gitlab-irc
         mps: 3.0 # messages_per_second
+        plugins:
+          #- !ruby/object:PLUGINNAME
         # Feel free to implement more if you know how
 
         # Channels
@@ -22,10 +24,12 @@ networks:
         port: 6697
         ssl: true
         sslverify: false
-        nick: GitLabIRC
+        nickname: GitLabIRC
         username: Git
         realname: https://gitlab.com/IotaSpencer/gitlab-irc
         mps: 3.0 # messages_per_second
+        plugins:
+          #- !ruby/object:PLUGINNAME
         # Feel free to implement more if you know how
 
         # Channels
