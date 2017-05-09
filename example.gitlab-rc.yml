@@ -3,9 +3,11 @@ networks:
         server: irc.server.net
         port: 6697
         ssl: true
+        sslverify: false
         nick: GitLabIRC
         username: Git
         realname: https://gitlab.com/IotaSpencer/gitlab-irc
+        mps: 3.0 # messages_per_second
         # Feel free to implement more if you know how
 
         # Channels
@@ -19,11 +21,13 @@ networks:
         server: irc.server.net
         port: 6697
         ssl: true
+        sslverify: false
         nick: GitLabIRC
         username: Git
         realname: https://gitlab.com/IotaSpencer/gitlab-irc
+        mps: 3.0 # messages_per_second
         # Feel free to implement more if you know how
-        
+
         # Channels
         channels:
             "#channel1":
