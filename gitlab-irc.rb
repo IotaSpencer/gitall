@@ -101,17 +101,16 @@ class MyApp < Sinatra::Base
   set :environment, 'production'
   post '/gitlab/?' do
     if headers['X-Gitlab-Token'] == config.token
-        json = JSON.parse(request.env["rack.input"].read)
-        kind = json['object_kind']
-        format = getFormat(kind, json)
-        bot.channels.each do |m|
-          format.each do |n|
-            bot.Channel(m).send("#{n}")
-          end
+      json = JSON.parse(request.env["rack.input"].read)
+      kind = json['object_kind']
+      format = getFormat(kind, json)
+      bot.channels.each do |m|
+        format.each do |n|
+          bot.Channel(m).send("#{n}")
         end
       end
     end
   end
-  # start the server if ruby file executed directly
 end
+# start the server if ruby file executed directly
 MyApp.run! if app_file == $0
