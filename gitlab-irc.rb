@@ -41,6 +41,10 @@ $bots.each do |key, bot|
   puts "Starting IRC connection for #{key}..."
   $threads << Thread.new { bot.start }
 end
+Signal.trap INT do
+  $bots.each do |bot|
+    bot.quit
+end
 # *getFormat*
 #
 # Returns the message format for the received
@@ -98,7 +102,7 @@ class MyApp < Sinatra::Base
     network = nil
     if $cfg.to_h.has_value? headers['X-Gitlab-Token']
       sent_token = headers['X-Gitlab-Token']
-      networks = $cfg.to_h.dig :networks
+      networks = $cfg["networks"]
       networks.each do |name, nethash|
         channels = nethash.fetch('channels', nil)
         channels.each do |c, chash|
@@ -113,7 +117,7 @@ class MyApp < Sinatra::Base
       format = getFormat(kind, json)
       bot.channels.each do |m|
         format.each do |n|
-          $bots[name].Channel(channel).send("#{n}")
+          $bots[network].Channel(channel).send("#{n}")
         end
       end
     end
