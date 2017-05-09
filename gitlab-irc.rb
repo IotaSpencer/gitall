@@ -10,7 +10,7 @@ require 'yaml'
 require './lib/chancontrol.rb'
 require './lib/logger.rb'
 
-$cfg = RecursiveOpenStruct.new(YAML.load_file(`echo ~/.gitlab-rc.yml`.chomp!))
+$cfg = RecursiveOpenStruct.new(YAML.load_file(`echo ~/.gitlab-rc.yml`.chomp))
 $bots = Hash.new
 $threads = Array.new
 

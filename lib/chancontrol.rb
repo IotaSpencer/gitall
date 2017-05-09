@@ -13,7 +13,7 @@ class ChanControl
 
   def toFile(msg)
     data = msg
-    File.open(`echo ~/.gitlab-rc.yml`.chomp!, "w") {|f| f.write(data.to_yaml) }
+    File.open(`echo ~/.gitlab-rc.yml`.chomp, "w") {|f| f.write(data.to_yaml) }
   end
 
   # Load the config
@@ -21,7 +21,7 @@ class ChanControl
 
   def deFile()
     begin
-      parsed = YAML.load(File.open(`echo ~/.gitlab-rc.yml`.chomp!, "r"))
+      parsed = YAML.load(File.open(`echo ~/.gitlab-rc.yml`.chomp, "r"))
     rescue ArgumentError => e
       puts "Could not parse YAML: #{e.message}"
     end
