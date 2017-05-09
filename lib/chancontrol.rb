@@ -1,4 +1,5 @@
 require "cinch"
+require 'cinch/extensions/authentication'
 require "yaml"
 require "recursive-open-struct"
 # @note ChanControl Plugin
