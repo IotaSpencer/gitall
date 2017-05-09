@@ -1,6 +1,5 @@
 #! /usr/bin/env ruby
-require 'rubygems'
-require 'sinatra/base'
+#require 'sinatra/base'
 require 'json'
 require 'cinch'
 require 'ostruct'
@@ -33,10 +32,10 @@ $cfg.networks.each do |name|
       c.plugins.plugins = ncfg.plugins
     end
   end
-  # bot.loggers.clear
-  # bot.loggers << RequestLogger.new(name, File.open("log/request-#{name}.log", "a"))
-  # bot.loggers << RequestLogger.new(name, STDOUT)
-  # bot.loggers.level = :error
+  bot.loggers.clear
+  #bot.loggers << RequestLogger.new(name, File.open("log/request-#{name}.log", "a"))
+  bot.loggers << RequestLogger.new(name, STDOUT)
+  bot.loggers.level = :error
   $bots[name] = bot
 end
 $bots.each do |key, bot|
