@@ -17,6 +17,7 @@ $config = RecursiveOpenStruct.new
 bot = Cinch::Bot.new do
   configure do |c|
     c.server = "irc.buddy.im"
+    c.port = 6697
     c.channels = ["#IRC-Source/Private", "#IRC-Source/Dev/Priv"]
     c.nick = "GitLab"
     #c.sasl.username = "GitLab0"
