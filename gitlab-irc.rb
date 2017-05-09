@@ -41,7 +41,7 @@ $bots.each do |key, bot|
   puts "Starting IRC connection for #{key}..."
   $threads << Thread.new { bot.start }
 end
-Signal.trap INT do
+Signal.trap "INT" do
   $bots.each do |bot|
     bot.quit
   end
