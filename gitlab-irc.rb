@@ -10,11 +10,11 @@ require 'yaml'
 require './lib/chancontrol.rb'
 #require './lib/logger.rb'
 
-$cfg = RecursiveOpenStruct.new(YAML.load_file(`echo ~/.gitlab-rc.yml`.chomp))
+$cfg = RecursiveOpenStruct.new(YAML.load_file("/home/bots/.gitlab-rc.yml"))
 $bots = Hash.new
 $threads = Array.new
 
-$cfg.networks.each do |name|
+$cfg.to_h.each do |name|
   ncfg = $cfg.dig(:networks, name)
   puts name
   bot = Cinch::Bot.new do
@@ -29,7 +29,7 @@ $cfg.networks.each do |name|
       c.ssl.use = ncfg.ssl
       c.ssl.verify = ncfg.sslverify
       c.messages_per_second = ncfg.mps
-      c.plugins.plugins = ncfg.plugins
+      #c.plugins.plugins = ncfg.plugins
     end
   end
   #bot.loggers.clear
