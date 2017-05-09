@@ -7,7 +7,7 @@ require "recursive-open-struct"
 class ChanControl
   include Cinch::Plugin
   include Cinch::Extensions::Authentication
-  :set prefix, /^`/
+  set :prefix, /^`/
   # Write to the config
   # @param [Hash] the data to write
 

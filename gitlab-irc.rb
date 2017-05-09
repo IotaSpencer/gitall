@@ -78,13 +78,16 @@ def getFormat(kind, json)
       coms.each do |n|
         id = n.id
         msg = n.message
-        
+
         push_list << ""
       end
     else
+      commits.each do |n|
+        id = n.id
+        msg = n.message
 
+        push_list << ""
     end
-    push_list
     return [before_list, push_list]
   end
   Thread.stop
@@ -99,6 +102,7 @@ post '/gitlab' do
       bot.channels.each do |m|
         format.each do |n|
           bot.Channel(m).send("#{n}")
+        end
       end
     end
     Thread.stop
