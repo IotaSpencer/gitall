@@ -41,9 +41,9 @@ $bots.each do |key, bot|
   puts "Starting IRC connection for #{key}..."
   $threads << Thread.new { bot.start }
 end
-Signal.trap "INT" do
-  $bots.each do |bot|
-    bot.quit
+Signal.trap("INT") do
+  $threads.each do |thr|
+    thr.exit
   end
 end
 # *getFormat*
@@ -97,7 +97,7 @@ class MyApp < Sinatra::Base
   set :bind, "0.0.0.0"
   set :threaded, true
   set :environment, 'production'
-  set :traps, false
+  disable :traps
   post '/gitlab/?' do
     channel = nil
     network = nil
