@@ -41,11 +41,7 @@ $bots.each do |key, bot|
   puts "Starting IRC connection for #{key}..."
   $threads << Thread.new { bot.start }
 end
-Signal.trap("INT") do
-  $threads.each do |thr|
-    thr.exit
-  end
-end
+
 # *getFormat*
 #
 # Returns the message format for the received
@@ -126,5 +122,11 @@ class MyApp < Sinatra::Base
   end
 end
 # start the server if ruby file executed directly
-Thread.new { MyApp.run! if __FILE__ == $0 }
+$threads << Thread.new { MyApp.run! if __FILE__ == $0 }
 $threads.each { |t| t.join }
+
+Signal.trap("INT") do
+  $threads.each do |thr|
+    thr.exit
+  end
+end
