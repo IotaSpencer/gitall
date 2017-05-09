@@ -5,6 +5,7 @@ require 'cinch'
 require 'ostruct'
 require 'recursive-open-struct'
 require 'yaml'
+Thread.abort_on_exception = true
 
 # @note Load the plugins
 require './lib/chancontrol.rb'
