@@ -20,10 +20,11 @@ $cfg["networks"].each do |name, ncfg|
       c.server = ncfg.fetch('server')
       c.port = ncfg.fetch('port')
       c.nick = ncfg.fetch('nickname')
-      c.username = ncfg.fetch('username')
+      c.user = ncfg.fetch('username')
       c.realname = ncfg.fetch('realname')
       #c.sasl.username = ncfg.sasl_username
       #c.sasl.password = ncfg.sasl_password
+      c.channels = ncfg.fetch('channels').keys
       c.ssl.use = ncfg.fetch('ssl')
       c.ssl.verify = ncfg.fetch('sslverify')
       c.messages_per_second = ncfg.fetch('mps')
