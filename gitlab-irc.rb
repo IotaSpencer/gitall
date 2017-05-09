@@ -32,7 +32,7 @@ $cfg.networks.each do |name|
       c.plugins.plugins = ncfg.plugins
     end
   end
-  bot.loggers.clear
+  #bot.loggers.clear
   #bot.loggers << RequestLogger.new(name, File.open("log/request-#{name}.log", "a"))
   bot.loggers << RequestLogger.new(name, STDOUT)
   bot.loggers.level = :error
@@ -121,4 +121,4 @@ end
 # end
 # # start the server if ruby file executed directly
 # Thread.new { MyApp.run! if __FILE__ == $0 }
-$threads.each { |t| t.join }
+#$threads.each { |t| t.join }
