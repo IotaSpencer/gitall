@@ -40,6 +40,11 @@ $cfg.networks.each do |name|
   $bots[name] = bot
 end
 
+
+$bots.each do |key, bot|
+  puts "Starting IRC connection for #{key}..."
+  $threads << Thread.new { bot.start }
+end
 # *getFormat*
 #
 # Returns the message format for the received
@@ -96,7 +101,6 @@ class MyApp < Sinatra::Base
   set :environment, 'production'
   post '/gitlab/?' do
     if headers['X-Gitlab-Token'] == config.token
-      Thread.new do
         json = JSON.parse(request.env["rack.input"].read)
         kind = json['object_kind']
         format = getFormat(kind, json)
@@ -106,9 +110,8 @@ class MyApp < Sinatra::Base
           end
         end
       end
-      Thread.stop
     end
   end
   # start the server if ruby file executed directly
-  run! if app_file == $0
 end
+MyApp.run! if app_file == $0
