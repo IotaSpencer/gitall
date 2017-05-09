@@ -1,5 +1,4 @@
 #! /usr/bin/env ruby
-# :markup: RDoc
 require 'rubygems'
 require 'sinatra'
 require 'json'
@@ -13,7 +12,7 @@ require './lib/chancontrol.rb'
 
 $config = RecursiveOpenStruct.new
 
-# IRC Config
+# @note BuddyIM config
 buddy = Cinch::Bot.new do
   configure do |c|
     c.server = "irc.buddy.im"
@@ -27,6 +26,7 @@ buddy = Cinch::Bot.new do
     c.plugins.plugins = [ChanControl]
   end
 end
+# @note ElectroCode config
 ecode = Cinch::Bot.new do
   configure do |c|
     c.server = "irc.electrocode.net"
@@ -75,14 +75,13 @@ def getFormat(kind, json)
         coms.each do |n|
           id = n.id
           msg = n.message
-
-          push_list << ""
+          push_list << "#{}"
         end
       else
         commits.each do |n|
           id = n.id
           msg = n.message
-
+          
           push_list << ""
       end
       return [before_list, push_list]
