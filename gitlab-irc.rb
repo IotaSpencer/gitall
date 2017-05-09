@@ -113,4 +113,4 @@ class MyApp < Sinatra::Base
   end
 end
 # start the server if ruby file executed directly
-MyApp.run! if app_file == $0
+MyApp.run! if __FILE__ == $0
