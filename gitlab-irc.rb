@@ -6,12 +6,11 @@ require 'json'
 require 'cinch'
 require 'ostruct'
 require 'recursive-open-struct'
-require 'sequel'
 require 'yaml'
-config = RecursiveOpenStruct.new
-config.config = RecursiveOpenStruct.new
-config.config.yml = YAML.load(File.open(`echo ~/.gitlab-rc.yml`.chomp!, "r"))
 
+# @note Load the plugins
+require lib/chancontrol
+$config = RecursiveOpenStruct.new
 
 # IRC Config
 bot = Cinch::Bot.new do
@@ -24,6 +23,7 @@ bot = Cinch::Bot.new do
     c.ssl.use = true
     c.ssl.verify = false
     c.messages_per_second = 0.1
+    c.plugins.plugins = [ChanControl]
   end
 end
 bot.start
