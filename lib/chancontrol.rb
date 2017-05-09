@@ -78,7 +78,7 @@ class ChanControl
           return false
         end
       end
-      n.reply "Channel: #{channel} / Joined? #{joined(channel)}"
+      m.reply "Channel: #{n} / Joined? #{joined(n)}"
     end
   end
 end
