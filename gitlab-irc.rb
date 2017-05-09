@@ -44,6 +44,7 @@ end
 Signal.trap INT do
   $bots.each do |bot|
     bot.quit
+  end
 end
 # *getFormat*
 #
