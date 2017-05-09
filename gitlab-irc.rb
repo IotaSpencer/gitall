@@ -1,5 +1,5 @@
 #! /usr/bin/env ruby
-#require 'sinatra/base'
+require 'sinatra/base'
 require 'json'
 require 'cinch'
 require 'ostruct'
@@ -86,38 +86,38 @@ def getFormat(kind, json)
   end
 end
 # @note POST ME DADDY
-# class MyApp < Sinatra::Base
-#   # ... app code here ...
-#   set :port, 8008
-#   set :bind, "0.0.0.0"
-#   set :threaded, true
-#   set :environment, 'production'
-#   post '/gitlab/?' do
-#     channel = nil
-#     network = nil
-#     if $cfg.to_h.has_value? headers['X-Gitlab-Token']
-#       sent_token = headers['X-Gitlab-Token']
-#       networks = $cfg.to_h.dig :networks
-#       networks.each do |name, nethash|
-#         channels = nethash.fetch('channels', nil)
-#         channels.each do |c, chash|
-#           if chash.token == sent_token
-#             channel = c
-#             network = name
-#           end
-#         end
-#       end
-#       json = JSON.parse(request.env["rack.input"].read)
-#       kind = json['object_kind']
-#       format = getFormat(kind, json)
-#       bot.channels.each do |m|
-#         format.each do |n|
-#           $bots[name].Channel(channel).send("#{n}")
-#         end
-#       end
-#     end
-#   end
-# end
-# # start the server if ruby file executed directly
-# Thread.new { MyApp.run! if __FILE__ == $0 }
+class MyApp < Sinatra::Base
+  # ... app code here ...
+  set :port, 8008
+  set :bind, "0.0.0.0"
+  set :threaded, true
+  set :environment, 'production'
+  post '/gitlab/?' do
+    channel = nil
+    network = nil
+    if $cfg.to_h.has_value? headers['X-Gitlab-Token']
+      sent_token = headers['X-Gitlab-Token']
+      networks = $cfg.to_h.dig :networks
+      networks.each do |name, nethash|
+        channels = nethash.fetch('channels', nil)
+        channels.each do |c, chash|
+          if chash.token == sent_token
+            channel = c
+            network = name
+          end
+        end
+      end
+      json = JSON.parse(request.env["rack.input"].read)
+      kind = json['object_kind']
+      format = getFormat(kind, json)
+      bot.channels.each do |m|
+        format.each do |n|
+          $bots[name].Channel(channel).send("#{n}")
+        end
+      end
+    end
+  end
+end
+# start the server if ruby file executed directly
+Thread.new { MyApp.run! if __FILE__ == $0 }
 $threads.each { |t| t.join }
