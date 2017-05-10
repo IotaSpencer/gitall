@@ -2,6 +2,7 @@ require "cinch"
 require 'cinch/extensions/authentication'
 require "yaml"
 require "recursive-open-struct"
+require "strgen"
 # @note ChanControl Plugin
 
 class ChanControl
@@ -31,16 +32,30 @@ class ChanControl
   match /add (\S)/, :method => :add
   match /rem (\S)/, :method => :rem
   match /list/, :method => :listchans
+  match /token/, :method => :getToken
 
-  def add(m, network, channel)
+  # @param [Message] message object
+  # @return [String] Token
+  def getToken(m)
+    Strgen.generate do |c|
+      c.length  = 30
+      c.alpha   = true
+      c.numbers = true
+      c.repeat  = false
+      c.symbols = false
+      c.exclude = %w(1 i I l L 0 o O)
+    end
+  end
+
+  def add(m, network, channel, token)
     return unless authenticated? m
-    networks = ['electrocode', 'buddyim']
-    config = deFile
+    networks = deFile["networks"]
+    config = networks
     unless networks.include? network
       m.reply "Error: That's not a valid network to me."
       return
     end
-    if config.has_key? "#{channel}"
+    if config[network]["channels"].has_key? "#{channel}"
       if Channel(channel)
         m.reply "#{channel} already exists in the config."
       else
@@ -50,8 +65,9 @@ class ChanControl
     else
       m.reply "Joining #{channel}"
       Channel(channel).join
-      config['channels'] << channel
-      toFile
+      config['channels'][channel] = {}
+      config['channels'][channel]['token'] =
+      toFile(config)
     end
   end
 
