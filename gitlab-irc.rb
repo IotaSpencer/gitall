@@ -77,14 +77,14 @@ def getFormat(kind, json)
     if commits.length > 3
       coms = commits[0..2]
       coms.each do |n|
-        id = n.id
-        msg = n.message
+        id = n[:id]
+        msg = n[:message]
         push_list << "#{}"
       end
     else
       commits.each do |n|
-        id = n.id
-        msg = n.message
+        id = n[:id]
+        msg = n[:message]
         push_list << "#{}"
       end
     end
