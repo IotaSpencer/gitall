@@ -9,6 +9,7 @@ Thread.abort_on_exception = true
 
 # @note Load the plugins
 require './lib/chancontrol.rb'
+require './lib/admin.rb'
 #require './lib/logger.rb'
 
 $cfg = YAML.load_file("/home/bots/.gitlab-rc.yml")
@@ -32,7 +33,7 @@ $cfg["networks"].each do |name, ncfg|
       c.authentication          = Cinch::Configuration::Authentication.new
       c.authentication.strategy = :channel_status # or :list / :login
       c.authentication.level    = :o
-      c.plugins.plugins = [ChanControl]
+      c.plugins.plugins = [ChanControl, Admin]
     end
   end
   #bot.loggers.clear
