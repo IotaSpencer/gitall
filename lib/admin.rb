@@ -12,8 +12,9 @@ class Admin
 
   def doQuit(m, msg = nil)
     return unless authenticated? m
-    m.reply "Quitting"
-    $bots.each do |bot|
+
+    $bots.each do |net, bot|
+      m.reply "Quitting from #{net}"
       bot.quit msg
     end
     $threads.each do |thr|
