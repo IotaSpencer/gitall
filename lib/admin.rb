@@ -15,7 +15,7 @@ class Admin
 
     $bots.each do |net, bot|
       m.reply "Quitting from #{net}"
-      bot.quit msg
+      bot.quit(message=msg)
     end
     $threads.each do |thr|
       thr.exit
