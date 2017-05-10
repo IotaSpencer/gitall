@@ -93,8 +93,9 @@ def getFormat(kind, json)
         ts = DateTime.parse(timestamp)
         time = ts.strftime("%b/%d/%Y %T")
         push_list << "#{author} — #{msg} [#{id.truncate(7)}]"
-        push_list << "and #{commits[3..-1].length} commits..."
+
       end
+      push_list << "and #{commits.from(3).length} commits..."
     else
       commits.each do |n|
         id = n[:id]
@@ -141,6 +142,7 @@ class MyApp < Sinatra::Base
       json = JSON.parse(request.env["rack.input"].read)
       kind = json['object_kind']
       format = getFormat(kind, json).flatten!
+      puts format.inspect
       format.each do |n|
         $bots[network].Channel(channel).send("#{n}")
       end
