@@ -123,7 +123,7 @@ class MyApp < Sinatra::Base
       end
       json = JSON.parse(request.env["rack.input"].read)
       kind = json['object_kind']
-      format = getFormat(kind, json)
+      format = getFormat(kind, json).flatten!
       format.each do |n|
         $bots[network].Channel(channel).send("#{n}")
       end
