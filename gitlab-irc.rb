@@ -115,7 +115,7 @@ class MyApp < Sinatra::Base
       networks.each do |name, nethash|
         channels = nethash.fetch('channels', nil)
         channels.each do |c, chash|
-          if chash.token == sent_token
+          if chash['token'] == sent_token
             channel = c
             network = name
           end
