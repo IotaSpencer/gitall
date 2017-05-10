@@ -96,7 +96,6 @@ class MyApp < Sinatra::Base
   # ... app code here ...
   set :port, 8008
   set :bind, "0.0.0.0"
-  set :threaded, true
   set :environment, 'production'
   disable :traps
   post '/gitlab/?' do
@@ -110,28 +109,30 @@ class MyApp < Sinatra::Base
         tokens << chanhash["token"]
       end
     end
-    if tokens.include? headers['X-Gitlab-Token']
-      sent_token = headers['X-Gitlab-Token']
-      networks = $cfg["networks"]
-      networks.each do |name, nethash|
-        channels = nethash.fetch('channels', nil)
-        channels.each do |c, chash|
-          if chash.token == sent_token
-            channel = c
-            network = name
-          end
-        end
-      end
-      json = JSON.parse(request.env["rack.input"].read)
-      kind = json['object_kind']
-      format = getFormat(kind, json)
-      format.each do |n|
-        $bots[network].Channel(channel).send("#{n}")
-      end
-      erb "Received! Thanks."
-    else
-      erb "Invalid Token"
-    end
+    puts channels
+    puts tokens
+    # if tokens.include? headers['X-Gitlab-Token']
+    #   sent_token = headers['X-Gitlab-Token']
+    #   networks = $cfg["networks"]
+    #   networks.each do |name, nethash|
+    #     channels = nethash.fetch('channels', nil)
+    #     channels.each do |c, chash|
+    #       if chash.token == sent_token
+    #         channel = c
+    #         network = name
+    #       end
+    #     end
+    #   end
+    #   json = JSON.parse(request.env["rack.input"].read)
+    #   kind = json['object_kind']
+    #   format = getFormat(kind, json)
+    #   format.each do |n|
+    #     $bots[network].Channel(channel).send("#{n}")
+    #   end
+    #   erb "Received! Thanks."
+    # else
+    #   erb "Invalid Token"
+    # end
   end
 end
 # start the server if ruby file executed directly
