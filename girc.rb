@@ -70,10 +70,10 @@ def getFormat(kind, json)
     added = 0
     removed = 0
     modified = 0
-    commits.each do |com|
-      added    += com[:added].length
-      removed  += com[:removed].length
-      modified += com[:modified].length
+    for h in commits do
+      added    += h["added"].length
+      removed  += h["removed"].length
+      modified += h["modified"].length
     end
     owner = j.project.namespace
     project = j.project.name
