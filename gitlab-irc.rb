@@ -29,7 +29,10 @@ $cfg["networks"].each do |name, ncfg|
       c.ssl.use = ncfg.fetch('ssl')
       c.ssl.verify = ncfg.fetch('sslverify')
       c.messages_per_second = ncfg.fetch('mps')
-      #c.plugins.plugins = ncfg.plugins
+      c.authentication          = Cinch::Configuration::Authentication.new
+      c.authentication.strategy = :channel_status # or :list / :login
+      c.authentication.level    = :o
+      c.plugins.plugins = [ChanControl]
     end
   end
   #bot.loggers.clear
@@ -113,13 +116,13 @@ class MyApp < Sinatra::Base
       json = JSON.parse(request.env["rack.input"].read)
       kind = json['object_kind']
       format = getFormat(kind, json)
-      bot.channels.each do |m|
-        format.each do |n|
-          $bots[network].Channel(channel).send("#{n}")
-        end
+      format.each do |n|
+        $bots[network].Channel(channel).send("#{n}")
       end
+      erb "Received! Thanks."
+    else
+      erb "Invalid Token"
     end
-    erb "Received! Thanks."
   end
 end
 # start the server if ruby file executed directly
