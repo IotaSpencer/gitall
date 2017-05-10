@@ -111,6 +111,8 @@ class MyApp < Sinatra::Base
     end
     puts channels
     puts tokens
+    puts request.env['HTTP_X_GITLAB_TOKEN']
+    erb "Thanks!"
     # if tokens.include? headers['X-Gitlab-Token']
     #   sent_token = headers['X-Gitlab-Token']
     #   networks = $cfg["networks"]
