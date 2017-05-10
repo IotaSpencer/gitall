@@ -2,6 +2,7 @@
 require 'sinatra/base'
 require 'json'
 require 'cinch'
+require "cinch/plugins/basic_ctcp"
 require 'ostruct'
 require 'recursive-open-struct'
 require 'yaml'
@@ -34,6 +35,10 @@ $cfg["networks"].each do |name, ncfg|
       c.authentication          = Cinch::Configuration::Authentication.new
       c.authentication.strategy = :channel_status # or :list / :login
       c.authentication.level    = :o
+      c.plugins.options[Cinch::Plugins::BasicCTCP][:replies] = {
+        :version => 'GitLab Hook Bot v1.0',
+        :source  => 'https://gitlab.com/IotaSpencer/gitlab-irc'
+      }
       c.plugins.plugins = [ChanControl, Admin]
     end
   end
@@ -107,12 +112,14 @@ def getFormat(kind, json)
       end
     end
     return [before_list, push_list]
+  when 'note'
+
   end
 end
 class MyApp < Sinatra::Base
   # ... app code here ...
   set :port, 8008
-  set :bind, "0.0.0.0"
+  set :bind, "127.0.0.1"
   set :environment, 'production'
   disable :traps
   post '/gitlab/?' do
