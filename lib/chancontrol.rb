@@ -37,7 +37,8 @@ class ChanControl
   # @param [Message] message object
   # @return [String] Token
   def getToken(m)
-    Strgen.generate do |c|
+    return unless authenticated? m
+    token = Strgen.generate do |c|
       c.length  = 30
       c.alpha   = true
       c.numbers = true
@@ -45,6 +46,7 @@ class ChanControl
       c.symbols = false
       c.exclude = %w(1 i I l L 0 o O)
     end
+    m.user.send "Token: #{token}"
   end
 
   def add(m, network, channel, token)
