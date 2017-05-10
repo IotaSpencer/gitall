@@ -70,7 +70,7 @@ def getFormat(kind, json)
     added = 0
     removed = 0
     modified = 0
-    for h in commits do
+    commits.each do |h|
       added    += h["added"].length
       removed  += h["removed"].length
       modified += h["modified"].length
@@ -86,24 +86,24 @@ def getFormat(kind, json)
     if commits.length > 3
       coms = commits[0..2]
       coms.each do |n|
-        id = n[:id]
-        msg = n[:message]
-        author = n[:author][:name]
-        timestamp = n[:timestamp]
+        id = n["id"]
+        msg = n["message"]
+        author = n["author"]["name"]
+        timestamp = n["timestamp"]
         ts = DateTime.parse(timestamp)
         time = ts.strftime("%b/%d/%Y %T")
-        push_list << "#{author} — #{msg} [#{id.truncate(7)}]"
+        push_list << "#{author} — #{msg} [#{id[0...7]}]"
       end
       push_list << "and #{commits.from(3).length} commits..."
     else
       commits.each do |n|
-        id = n[:id]
-        msg = n[:message]
-        author = n[:author][:name]
-        timestamp = n[:timestamp]
+        id = n['id']
+        msg = n['message']
+        author = n['author']['name']
+        timestamp = n['timestamp']
         ts = DateTime.parse(timestamp)
         time = ts.strftime("%b/%d/%Y %T")
-        push_list << "#{author} — #{msg} [#{id.truncate(7)}]"
+        push_list << "#{author} — #{msg} [#{id[0...7]}]"
       end
     end
     return [before_list, push_list]
