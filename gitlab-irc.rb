@@ -132,6 +132,6 @@ $threads.each { |t| t.join }
 
 at_exit do
   puts "Lets clear our window"
-  `reset`
+  print %x{clear}
   exit 0
 end
