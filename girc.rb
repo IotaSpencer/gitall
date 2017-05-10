@@ -93,7 +93,6 @@ def getFormat(kind, json)
         ts = DateTime.parse(timestamp)
         time = ts.strftime("%b/%d/%Y %T")
         push_list << "#{author} — #{msg} [#{id.truncate(7)}]"
-
       end
       push_list << "and #{commits.from(3).length} commits..."
     else
