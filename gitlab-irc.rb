@@ -102,7 +102,7 @@ class MyApp < Sinatra::Base
   post '/gitlab/?' do
     channel = nil
     network = nil
-    if $cfg.to_h.has_value? headers['X-Gitlab-Token']
+    if $cfg.has_value? headers['X-Gitlab-Token']
       sent_token = headers['X-Gitlab-Token']
       networks = $cfg["networks"]
       networks.each do |name, nethash|
