@@ -5,6 +5,7 @@ require 'cinch'
 require 'ostruct'
 require 'recursive-open-struct'
 require 'yaml'
+require 'active_support/all'
 Thread.abort_on_exception = true
 
 # @note Load the plugins
@@ -64,34 +65,50 @@ def getFormat(kind, json)
   case kind
   when 'push' # comes to
     # shove
-    branch = j.ref
+    branch = j.ref.split('/')[-1]
     commits = j.commits
+    added = 0
+    removed = 0
+    modified = 0
+    commits.each do |com|
+      added    += com[:added].length
+      removed  += com[:removed].length
+      modified += com[:modified].length
+    end
     owner = j.project.namespace
     project = j.project.name
     pusher = j.user_name
     commit_count = j.total_commits_count
     repo_url = j.project.web_url
     before_list = []
-    before_list << "[#{owner}/#{project}] #{pusher} pushed #{commit_count} commit(s) to #{branch} <#{repo_url}>"
+    before_list << "[#{owner}/#{project}] #{pusher} pushed #{commit_count} commit(s) [+#{added}/-#{removed}/±#{modified}] to [#{branch}] at <#{repo_url}>"
     push_list = []
     if commits.length > 3
       coms = commits[0..2]
       coms.each do |n|
         id = n[:id]
         msg = n[:message]
-        push_list << "#{}"
+        author = n[:author][:name]
+        timestamp = n[:timestamp]
+        ts = DateTime.parse(timestamp)
+        time = ts.strftime("%b/%d/%Y %T")
+        push_list << "#{author} — #{msg} [#{id.truncate(7)}]"
+        push_list << "and #{commits[3..-1].length} commits..."
       end
     else
       commits.each do |n|
         id = n[:id]
         msg = n[:message]
-        push_list << "#{}"
+        author = n[:author][:name]
+        timestamp = n[:timestamp]
+        ts = DateTime.parse(timestamp)
+        time = ts.strftime("%b/%d/%Y %T")
+        push_list << "#{author} — #{msg} [#{id.truncate(7)}]"
       end
     end
     return [before_list, push_list]
   end
 end
-# @note POST ME DADDY
 class MyApp < Sinatra::Base
   # ... app code here ...
   set :port, 8008
