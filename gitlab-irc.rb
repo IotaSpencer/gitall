@@ -130,8 +130,8 @@ end
 $threads << Thread.new { MyApp.run! if __FILE__ == $0 }
 $threads.each { |t| t.join }
 
-Signal.trap("INT") do
-  $threads.each do |thr|
-    thr.exit
-  end
+at_exit do
+  puts "Lets clear our window"
+  `reset`
+  exit 0
 end
