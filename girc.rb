@@ -62,7 +62,7 @@ end
 # Shortener 
 
 def shorten(url)
-  domain = {"id" => "f266d3cddc0347aca001395249c067f6"}.to_json
+  domain = {"id" => "f266d3cddc0347aca001395249c067f6", "ref" => "/domains/f266d3cddc0347aca001395249c067f6"}
   url = "https://api.rebrandly.com/v1/links"
   params = {
     "destination" => url,
@@ -72,10 +72,7 @@ def shorten(url)
               headers:{ "Accept" => "application/json", "Content-type" => "application/json"}, 
               parameters:params.to_json
 
-  return {
-    :code => response.code,
-    :body => response.body
-  }
+  return response.
 end
 
 # Hook
