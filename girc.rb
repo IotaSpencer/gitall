@@ -98,7 +98,7 @@ def getFormat(kind, json)
     case ntype
     when 'MergeRequest'
       mr_note    = j.object_attributes.note
-      mr_url     = shorten(j.object_attributes.url)[:body]
+      mr_url     = shorten(j.object_attributes.url)
       mr_title   = j.merge_request.title
       mr_id      = j.merge_request.iid
       return [
@@ -127,7 +127,7 @@ def getFormat(kind, json)
     project = j.project.name
     pusher = j.user_name
     commit_count = j.total_commits_count
-    repo_url = shorten(j.project.web_url)[:body]
+    repo_url = shorten(j.project.web_url)
     before_list = []
     before_list << "[#{owner}/#{project}] #{pusher} pushed #{commit_count} commit(s) [+#{added}/-#{removed}/±#{modified}] to [#{branch}] at <#{repo_url}>"
     push_list = []
