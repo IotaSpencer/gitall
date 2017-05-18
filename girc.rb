@@ -65,6 +65,7 @@ def shorten(url)
   domain = 
   url = "https://api.rebrandly.com/v1/links"
   params = {
+    :apikey => $cfg["apikey"],
     :destination => url,
     :domain => {
       "id" => "f266d3cddc0347aca001395249c067f6",
