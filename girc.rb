@@ -62,14 +62,17 @@ end
 # Shortener 
 
 def shorten(url)
-  domain = {"id" => "f266d3cddc0347aca001395249c067f6", "ref" => "/domains/f266d3cddc0347aca001395249c067f6"}
+  domain = 
   url = "https://api.rebrandly.com/v1/links"
   params = {
-    "destination" => url,
-    "domain": domain
+    :destination => url,
+    :domain => {
+      "id" => "f266d3cddc0347aca001395249c067f6",
+      "ref" => "/domains/f266d3cddc0347aca001395249c067f6"
+    }
   }
   response = Unirest.post url,
-              headers:{ "Accept" => "application/json", "Content-type" => "application/json"}, 
+              headers:{"Content-Type" => "application/json"}, 
               parameters:params.to_json
 
   puts response.body
