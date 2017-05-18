@@ -69,7 +69,7 @@ def shorten(url)
     "domain": domain
   }
   response = Unirest.post url,
-              headers:{ "Accept" => "application/json" }, 
+              headers:{ "Accept" => "application/json", "Content-type" => "application/json"}, 
               parameters:params.to_json
 
   return {
