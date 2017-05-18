@@ -70,7 +70,12 @@ def shorten(url)
   }
   response = Unirest.post url,
               headers:{ "Accept" => "application/json" }, 
-              parameters:params.to_json 
+              parameters:params.to_json
+
+  return {
+    :code => response.code,
+    :body => response.body
+  }
 end
 
 # Hook
@@ -96,7 +101,7 @@ def getFormat(kind, json)
     case ntype
     when 'MergeRequest'
       mr_note    = j.object_attributes.note
-      mr_url     = shorten(j.object_attributes.url)
+      mr_url     = shorten(j.object_attributes.url)[:body]
       mr_title   = j.merge_request.title
       mr_id      = j.merge_request.iid
       return [
@@ -125,7 +130,7 @@ def getFormat(kind, json)
     project = j.project.name
     pusher = j.user_name
     commit_count = j.total_commits_count
-    repo_url = shorten(j.project.web_url)
+    repo_url = shorten(j.project.web_url)[:body]
     before_list = []
     before_list << "[#{owner}/#{project}] #{pusher} pushed #{commit_count} commit(s) [+#{added}/-#{removed}/±#{modified}] to [#{branch}] at <#{repo_url}>"
     push_list = []
