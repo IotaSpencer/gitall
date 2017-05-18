@@ -6,6 +6,7 @@ require "cinch/plugins/basic_ctcp"
 require 'ostruct'
 require 'recursive-open-struct'
 require 'yaml'
+require 'unirest'
 require 'active_support/all'
 Thread.abort_on_exception = true
 
@@ -14,6 +15,9 @@ require './lib/chancontrol.rb'
 require './lib/admin.rb'
 #require './lib/logger.rb'
 
+
+
+# Cinch
 $cfg = YAML.load_file("/home/bots/.gitlab-rc.yml")
 $bots = Hash.new
 $threads = Array.new
@@ -55,6 +59,22 @@ $bots.each do |key, bot|
   $threads << Thread.new { bot.start }
 end
 
+# Shortener 
+
+def shorten(url)
+  domain = {"id" => "f266d3cddc0347aca001395249c067f6"}.to_json
+  url = "https://api.rebrandly.com/v1/links"
+  params = {
+    "destination" => url,
+    "domain": domain
+  }
+  response = Unirest.post url,
+              headers:{ "Accept" => "application/json" }, 
+              parameters:params.to_json 
+end
+
+# Hook
+
 # *getFormat*
 #
 # Returns the message format for the received
@@ -76,13 +96,19 @@ def getFormat(kind, json)
     case ntype
     when 'MergeRequest'
       mr_note    = j.object_attributes.note
-      mr_url     = j.object_attributes.url
+      mr_url     = shorten(j.object_attributes.url)
       mr_title   = j.merge_request.title
       mr_id      = j.merge_request.iid
+      return [
+      "[#{repo}] New Comment on Merge Request ##{mr_id}",
+      "'#{mr_title}' => #{mr_url}"
+      ]
+    when 'Commit'
+      c_message = j.commit.message
+      c_note    = j.object_attributes.note
+      
     end
-    [
-      "[#{repo}] New Comment on Merge Request ##{mr_id} '#{mr_title}' => #{mr_url}"
-    ]
+    
   when 'push' # comes to
     # shove
     branch = j.ref.split('/')[-1]
@@ -99,7 +125,7 @@ def getFormat(kind, json)
     project = j.project.name
     pusher = j.user_name
     commit_count = j.total_commits_count
-    repo_url = j.project.web_url
+    repo_url = shorten(j.project.web_url)
     before_list = []
     before_list << "[#{owner}/#{project}] #{pusher} pushed #{commit_count} commit(s) [+#{added}/-#{removed}/±#{modified}] to [#{branch}] at <#{repo_url}>"
     push_list = []
