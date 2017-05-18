@@ -72,7 +72,7 @@ def shorten(url)
               headers:{ "Accept" => "application/json", "Content-type" => "application/json"}, 
               parameters:params.to_json
 
-  return response.headers
+  puts response.headers
 end
 
 # Hook
