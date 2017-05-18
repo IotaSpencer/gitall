@@ -35,11 +35,13 @@ $cfg["networks"].each do |name, ncfg|
       c.authentication          = Cinch::Configuration::Authentication.new
       c.authentication.strategy = :channel_status # or :list / :login
       c.authentication.level    = :o
+      c.plugins.plugins << Cinch::Plugins::BasicCTCP
       c.plugins.options[Cinch::Plugins::BasicCTCP][:replies] = {
         :version => 'GitLab Hook Bot v1.0',
         :source  => 'https://gitlab.com/IotaSpencer/gitlab-irc'
       }
-      c.plugins.plugins = [ChanControl, Admin]
+      c.plugins.plugins << ChanControl
+      c.plugins.plugins << Admin
     end
   end
   #bot.loggers.clear
@@ -68,6 +70,19 @@ def getFormat(kind, json)
   ]
   j = RecursiveOpenStruct.new(json)
   case kind
+  when 'note'
+    repo = j.project.path_with_namespace
+    ntype = j.object_attributes.noteable_type
+    case ntype
+    when 'MergeRequest'
+      mr_note    = j.object_attributes.note
+      mr_url     = j.object_attributes.url
+      mr_title   = j.merge_request.title
+      mr_id      = j.merge_request.iid
+    end
+    [
+      "[#{repo}] New Comment on Merge Request ##{mr_id} '#{mr_title}' => #{mr_url}"
+    ]
   when 'push' # comes to
     # shove
     branch = j.ref.split('/')[-1]
@@ -111,9 +126,7 @@ def getFormat(kind, json)
         push_list << "#{author} — #{msg} [#{id[0...7]}]"
       end
     end
-    return [before_list, push_list]
-  when 'note'
-
+    return [before_list, push_list].flatten!
   end
 end
 class MyApp < Sinatra::Base
@@ -121,7 +134,6 @@ class MyApp < Sinatra::Base
   set :port, 8008
   set :bind, "127.0.0.1"
   set :environment, 'production'
-  disable :traps
   post '/gitlab/?' do
     channel = nil
     network = nil
@@ -147,8 +159,7 @@ class MyApp < Sinatra::Base
       end
       json = JSON.parse(request.env["rack.input"].read)
       kind = json['object_kind']
-      format = getFormat(kind, json).flatten!
-      puts format.inspect
+      format = getFormat(kind, json)
       format.each do |n|
         $bots[network].Channel(channel).send("#{n}")
       end
