@@ -8,7 +8,6 @@ require "strgen"
 class ChanControl
   include Cinch::Plugin
   include Cinch::Extensions::Authentication
-  set :prefix, /^`/
   # Write to the config
   # @param [Hash] the data to write
 
@@ -29,7 +28,7 @@ class ChanControl
     return parsed
   end
 
-  match /add (\S)/, :method => :add
+  match /add (\S) (\S) (\S)/, :method => :add
   match /rem (\S)/, :method => :rem
   match /list/, :method => :listchans
   match /token/, :method => :getToken
