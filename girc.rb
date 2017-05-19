@@ -88,12 +88,6 @@ end
 # @param kind [String] event type
 # @param json [JSON] json hash
 def getFormat(kind, json)
-  kinds = [
-    "push",
-    "note",
-    "wiki_page",
-    "merge_request"
-  ]
   j = RecursiveOpenStruct.new(json)
   case kind
   when 'note'
@@ -112,9 +106,22 @@ def getFormat(kind, json)
     when 'Commit'
       c_message = j.commit.message
       c_note    = j.object_attributes.note
-      
+      c_sha     = j.commit.id[0...7]
+      c_url     = shorten(j.object_attributes.url)      
     end
-    
+  when 'merge_request'
+    mr_name      = j.user.name
+    mr_user      = j.user.username
+    mr_url       = shorten(j.url)
+    mr_spath     = j.object_attributes.source.path_with_namespace
+    mr_sbranch   = j.object_attributes.source_branch
+    mr_tpath     = j.object_attributes.target.path_with_namespace
+    mr_tbranch   = j.object_attributes.target_branch
+    mr_lcmessage = j.last_commit.message
+    mr_lcsha     = j.last_commit.id[0...7]
+    response = []
+    response << "#{mr_name}(#{mr_user}) opened a merge request. #{mr_spath}[#{mr_sbranch}] ~> #{mr_tpath}[#{mr_tbranch}]"
+    response << "[#{mr_lcsha}] \u2014 #{mr_lcmessage} <#{mr_url}>"
   when 'push' # comes to
     # shove
     branch = j.ref.split('/')[-1]
