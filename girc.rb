@@ -93,22 +93,33 @@ def getFormat(kind, json)
   when 'note'
     repo = j.project.path_with_namespace
     ntype = j.object_attributes.noteable_type
+    response = []
     case ntype
     when 'MergeRequest'
-      mr_note    = j.object_attributes.note
-      mr_url     = shorten(j.object_attributes.url)
-      mr_title   = j.merge_request.title
-      mr_id      = j.merge_request.iid
-      return [
-      "[#{repo}] New Comment on Merge Request ##{mr_id}",
-      "'#{mr_title}' => #{mr_url}"
+      mr_note  = j.object_attributes.note
+      mr_url   = shorten(j.object_attributes.url)
+      mr_title = j.merge_request.title
+      mr_id    = j.merge_request.iid
+      mr_user  = j.user.name
+      response << "[#{repo}] #{mr_user} commented on Merge Request ##{mr_id} \u2014 #{mr_note}"
+      response << "'#{mr_title}' => #{mr_url}"
       ]
     when 'Commit'
       c_message = j.commit.message
       c_note    = j.object_attributes.note
       c_sha     = j.commit.id[0...7]
-      c_url     = shorten(j.object_attributes.url)      
+      c_url     = shorten(j.object_attributes.url)
+      c_user    = j.user.name
+      response << "[#{repo}] #{c_user} commented on commit (#{c_sha}) \u2014 #{c_note} <#{c_url}>"
+    when 'Issue'
+      i_id    = j.issue.iid
+      i_url   = shorten(j.object_attributes.url)
+      i_msg   = j.object_attributes.note
+      i_title = j.issue.title
+      i_user  = j.user.name
+      response << "[#{repo}] #{i_user} commented on Issue ##{i_id} (#{i_title}) \u2014 #{i_msg} <#{i_url}>"
     end
+    return response
   when 'merge_request'
     mr_name      = j.user.name
     mr_user      = j.user.username
