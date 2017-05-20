@@ -89,11 +89,11 @@ end
 # @param json [JSON] json hash
 def getFormat(kind, json)
   j = RecursiveOpenStruct.new(json)
+  response = []
   case kind
   when 'note'
     repo = j.project.path_with_namespace
     ntype = j.object_attributes.noteable_type
-    response = []
     case ntype
     when 'MergeRequest'
       mr_note  = j.object_attributes.note
@@ -150,9 +150,7 @@ def getFormat(kind, json)
     pusher = j.user_name
     commit_count = j.total_commits_count
     repo_url = shorten(j.project.web_url)
-    before_list = []
-    before_list << "[#{owner}/#{project}] #{pusher} pushed #{commit_count} commit(s) [+#{added}/-#{removed}/±#{modified}] to [#{branch}] at <#{repo_url}>"
-    push_list = []
+    response << "[#{owner}/#{project}] #{pusher} pushed #{commit_count} commit(s) [+#{added}/-#{removed}/±#{modified}] to [#{branch}] at <#{repo_url}>"
     if commits.length > 3
       coms = commits[0..2]
       coms.each do |n|
@@ -162,21 +160,21 @@ def getFormat(kind, json)
         timestamp = n["timestamp"]
         ts = DateTime.parse(timestamp)
         time = ts.strftime("%b/%d/%Y %T")
-        push_list << "#{author} — #{msg} [#{id[0...7]}]"
+        response << "#{author} — #{msg} [#{id[0...7]}]"
       end
-      push_list << "and #{commits.from(3).length} commits..."
+      response << "and #{commits.from(3).length} commits..."
     else
       commits.each do |n|
-        id = n['id']
+        id = n['id'][0...7]
         msg = n['message']
         author = n['author']['name']
         timestamp = n['timestamp']
         ts = DateTime.parse(timestamp)
         time = ts.strftime("%b/%d/%Y %T")
-        push_list << "#{author} — #{msg} [#{id[0...7]}]"
+        response << "#{author} — #{msg} [#{id}]"
       end
     end
-    return [before_list, push_list].flatten!
+    return response
   end
 end
 class MyApp < Sinatra::Base
