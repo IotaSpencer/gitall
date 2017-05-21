@@ -153,11 +153,8 @@ class MyApp < Sinatra::Base
           $bots[network].Channel(channel).send("#{n}")
         end
       else
-        [403, erb :_403]
+        [403, "Invalid Token"]
       end
-    else
-      status 403
-      erb 
     end
   end
 end
