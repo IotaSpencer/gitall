@@ -90,11 +90,11 @@ class GitLabParser
 	        author = n['author']['name']
 	        timestamp = n['timestamp']
 	        ts = DateTime.parse(timestamp)
-	        time = ts.strftime("%b/%d/%Y %T")
-	        response << "#{author} — #{msg} [#{id}]"
-	      end
-	    end
+          time = ts.strftime("%b/%d/%Y %T")
+          response << "#{author} — #{msg} [#{id}]"
+        end
+      end
 	  end
-		return response
-	end
+    return response
+  end
 end
