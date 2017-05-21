@@ -94,7 +94,7 @@ class GitLabParser
 	        response << "#{author} — #{msg} [#{id}]"
 	      end
 	    end
-	    return response
 	  end
+		return response
 	end
 end
