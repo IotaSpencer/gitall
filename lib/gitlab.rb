@@ -46,8 +46,8 @@ class GitLabParser
       mr_sbranch   = j.object_attributes.source_branch
       mr_tpath     = j.object_attributes.target.path_with_namespace
       mr_tbranch   = j.object_attributes.target_branch
-      mr_lcmessage = j.last_commit.message
-      mr_lcsha     = j.last_commit.id[0...7]
+      mr_lcmessage = j.object_attributes.last_commit.message
+      mr_lcsha     = j.object_attributes.last_commit.id[0...7]
       response = []
       response << "#{mr_name}(#{mr_user}) opened a merge request. #{mr_spath}[#{mr_sbranch}] ~> #{mr_tpath}[#{mr_tbranch}]"
       response << "[#{mr_lcsha}] \u2014 #{mr_lcmessage} <#{mr_url}>"
