@@ -117,8 +117,6 @@ class MyApp < Sinatra::Base
     if request.env.fetch('HTTP_X_HUB_SIGNATURE', "")
       sent_token = request.env['HTTP_X_HUB_SIGNATURE']
       networks = $cfg["networks"]
-      digest = OpenSSL::Digest.new('sha1')
-      hmac = OpenSSL::HMAC.hexdigest(digest, , json.to_json)
       networks.each do |name, nethash|
         channels = nethash.fetch('channels', nil)
         channels.each do |c, chash|
