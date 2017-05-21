@@ -115,7 +115,7 @@ class MyApp < Sinatra::Base
       end
     end
 
-    if request.env.fetch('HTTP_X_HUB_SIGNATURE', "")
+    if request.env.fetch('HTTP_X_HUB_SIGNATURE')
       sent_token = request.env['HTTP_X_HUB_SIGNATURE']
       networks = $cfg["networks"]
       networks.each do |name, nethash|
@@ -134,7 +134,7 @@ class MyApp < Sinatra::Base
       format.each do |n|
         $bots[network].Channel(channel).send("#{n}")
       end
-    elsif request.env.fetch('HTTP_X_GITLAB_TOKEN', "")
+    elsif request.env.fetch('HTTP_X_GITLAB_TOKEN')
       if tokens.include? request.env['HTTP_X_GITLAB_TOKEN']
         sent_token = request.env['HTTP_X_GITLAB_TOKEN']
         networks = $cfg["networks"]
