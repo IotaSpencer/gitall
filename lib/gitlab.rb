@@ -1,6 +1,6 @@
 # GitLab Event Parsing
 class GitLabParser
-  def GitLabParser.parse json
+  def GitLabParser.parse(json)
     j = RecursiveOpenStruct.new(json)
     response = []
     kind = j.object_kind
@@ -17,7 +17,6 @@ class GitLabParser
         mr_user  = j.user.name
         response << "[#{repo}] #{mr_user} commented on Merge Request ##{mr_id} \u2014 #{mr_note}"
         response << "'#{mr_title}' => #{mr_url}"
-        ]
       when 'Commit'
         c_message = j.commit.message
         c_note    = j.object_attributes.note
