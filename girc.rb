@@ -15,7 +15,9 @@ require './lib/chancontrol.rb'
 require './lib/admin.rb'
 #require './lib/logger.rb'
 
-
+# @note Load the parsers
+require './lib/gitlab.rb'
+require './lib/github.rb'
 
 # Cinch
 $cfg = YAML.load_file("/home/bots/.gitlab-rc.yml")
@@ -129,7 +131,7 @@ class MyApp < Sinatra::Base
           end
         end
       end
-      format = GitHubParser.parse json
+      format = GitHubParser.parse json, request.env['HTTP_X_GITHUB_EVENT']
       format.each do |n|
         $bots[network].Channel(channel).send("#{n}")
       end
@@ -150,10 +152,12 @@ class MyApp < Sinatra::Base
         format.each do |n|
           $bots[network].Channel(channel).send("#{n}")
         end
+      else
+        [403, erb :_403]
       end
-      erb "Received! Thanks."
     else
-      erb "Invalid Token"
+      status 403
+      erb 
     end
   end
 end
