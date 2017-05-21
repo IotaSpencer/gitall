@@ -111,6 +111,7 @@ class MyApp < Sinatra::Base
         tokens.each do |token|
           hmac = OpenSSL::HMAC.hexdigest(digest, token, request.env["rack.input"].read)
           signatures << hmac
+        end
       end
     end
 
