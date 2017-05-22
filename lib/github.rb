@@ -40,7 +40,7 @@ class GitHubParser
           response << "#{author} — #{msg} [#{id}]"
         end
       end      
-      
+    end
     return response
   end
 end
