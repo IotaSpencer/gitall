@@ -6,6 +6,10 @@ class GitHubParser
     response = []
 
     case event
+    when 'ping'
+      zen = j.zen
+      id = j.hook_id
+      response << "Hook #{id} [PING] '#{zen}'"
     when 'push'
       repo = j.repository.full_name
       branch = j.ref.split('/')[-1]
